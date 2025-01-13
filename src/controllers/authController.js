@@ -2,9 +2,11 @@ const { COOKIE_SECURE, FRONTEND_URL } = require("../config/serverConfig");
 const { loginUser } = require("../services/authService");
 
 
+
+
+
 async function logout(req, res) {
 
-    console.log("Cookie from frontend", req.cookies);
 
     res.cookie("authToken", "", {
         httpOnly: true,
@@ -12,6 +14,7 @@ async function logout(req, res) {
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
         domain: FRONTEND_URL
+        // domain: 'localhost'
     });
     return res.status(200).json({
         success: true,
@@ -26,13 +29,13 @@ async function login(req, res) {
         const loginPayload = req.body;
 
         const response = await loginUser(loginPayload);
-        console.log(response.token)
 
         res.cookie("authToken", response.token, {
             httpOnly: true,
-            secure: false,
+            secure: COOKIE_SECURE,
             sameSite: "lax",
             domain: 'localhost',
+            // domain: FRONTEND_URL,
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
